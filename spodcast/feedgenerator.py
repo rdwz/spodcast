@@ -10,7 +10,7 @@ VERSION_NOT_FOUND = 0
 def get_index_version(filename) -> str:
     with open(filename, 'rb') as f:
         for line in f.readlines():
-            m = re.search(RSS_FEED_VERSION + ' (\d+.\d+.\d+)', str(line))
+            m = re.search(RSS_FEED_VERSION + r' (\d+.\d+.\d+)', str(line))
             if m:
                 return int(m[1].replace('.',''))
 

@@ -1,33 +1,44 @@
 import re
 
-RSS_FEED_FILE_NAME = '.index.php'
-RSS_FEED_INFO_EXTENSION = 'info'
-RSS_FEED_SHOW_INDEX = 'index'
-RSS_FEED_SHOW_IMAGE = 'image.jpg'
-RSS_FEED_VERSION = '$SPODCAST_VERSION$ '
+RSS_FEED_FILE_NAME = ".index.php"
+RSS_FEED_INFO_EXTENSION = "info"
+RSS_FEED_SHOW_INDEX = "index"
+RSS_FEED_SHOW_IMAGE = "image.jpg"
+RSS_FEED_VERSION = "$SPODCAST_VERSION$ "
 VERSION_NOT_FOUND = 0
 
+
 def get_index_version(filename) -> str:
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         for line in f.readlines():
-            m = re.search(RSS_FEED_VERSION + r' (\d+.\d+.\d+)', str(line))
+            m = re.search(RSS_FEED_VERSION + r" (\d+.\d+.\d+)", str(line))
             if m:
-                return int(m[1].replace('.',''))
+                return int(m[1].replace(".", ""))
 
     return VERSION_NOT_FOUND
 
 
 def RSS_FEED_CODE(version):
-    return r'''<?php
-/* ''' + RSS_FEED_VERSION + version + r''' */
-const SHOW_INDEX = "''' + RSS_FEED_SHOW_INDEX + r'''";
-const INFO = "''' + RSS_FEED_INFO_EXTENSION + r'''";
+    return (
+        r"""<?php
+/* """
+        + RSS_FEED_VERSION
+        + version
+        + r''' */
+const SHOW_INDEX = "'''
+        + RSS_FEED_SHOW_INDEX
+        + r'''";
+const INFO = "'''
+        + RSS_FEED_INFO_EXTENSION
+        + r"""";
 $PROTOCOL = (empty($_SERVER['HTTPS'])) ? "http://" : "https://";
 header("Content-type: text/xml");
 $feed_name = "Spodcast autofeed";
 $feed_description = "Spodcast autofeed";
 $base_url = strtok($PROTOCOL . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], '?');
-$feed_logo = "$base_url/''' + RSS_FEED_SHOW_IMAGE + r'''";
+$feed_logo = "$base_url/"""
+        + RSS_FEED_SHOW_IMAGE
+        + r"""";
 $feed_link = $base_url;
 $allowed_extensions = array('mp4','m4a','aac','mp3','ogg');
 
@@ -84,16 +95,32 @@ foreach ($raw_files as &$raw_file) {
 }
 ?>
     </channel>
-</rss>'''
+</rss>"""
+    )
+
 
 def RSS_INDEX_CODE(bin_path, config_name, version):
-    return r'''<?php
-/* ''' + RSS_FEED_VERSION + version + r''' */
-const INFO="''' + RSS_FEED_INFO_EXTENSION + r'''";
-const SHOW_INFO="''' + RSS_FEED_SHOW_INDEX + r'''.".INFO;
-const SPODCAST="''' + bin_path + r'''";
-const SPODCAST_CONFIG="''' + config_name + r'''";
-const SHOW_IMAGE="''' + RSS_FEED_SHOW_IMAGE + r'''";
+    return (
+        r"""<?php
+/* """
+        + RSS_FEED_VERSION
+        + version
+        + r''' */
+const INFO="'''
+        + RSS_FEED_INFO_EXTENSION
+        + r'''";
+const SHOW_INFO="'''
+        + RSS_FEED_SHOW_INDEX
+        + r'''.".INFO;
+const SPODCAST="'''
+        + bin_path
+        + r'''";
+const SPODCAST_CONFIG="'''
+        + config_name
+        + r'''";
+const SHOW_IMAGE="'''
+        + RSS_FEED_SHOW_IMAGE
+        + r"""";
 const FEEDS_INFO="feeds.".INFO;
 const SETTINGS_INFO="settings.".INFO;
 const MAX_EPISODES=3;
@@ -929,5 +956,5 @@ $UPDATE_RATE=$settings['update_rate'];
     }?>
     </script>
 </body>
-</html>'''
-
+</html>"""
+    )

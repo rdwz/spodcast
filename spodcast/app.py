@@ -10,6 +10,7 @@ from spodcast.spodcast import Spodcast
 
 log = logging.getLogger(__name__)
 
+
 def client(args) -> None:
     Spodcast(args)
     Spodcast.DOWNLOAD_QUALITY = AudioQuality.NORMAL
@@ -25,6 +26,8 @@ def client(args) -> None:
             elif show_id_str is not None:
                 show_id = ShowId.from_base62(show_id_str)
                 log.debug("show_id: %s", show_id)
-                for episode_id in islice(get_episodes(show_id), Spodcast.CONFIG.get_max_episodes()):
+                for episode_id in islice(
+                    get_episodes(show_id), Spodcast.CONFIG.get_max_episodes()
+                ):
                     log.debug("episode_id: %s", episode_id)
                     download_episode(episode_id)
